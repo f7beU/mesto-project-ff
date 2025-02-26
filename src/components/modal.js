@@ -1,45 +1,41 @@
-import { popup, popupNewCard, popupTypeEdit, popupImage } from "../index.js";
+import { popupNewCard, popupTypeEdit } from "../index.js";
+
+import { popupImage } from "./card.js";
 
 export {
-  openModal,
+  openModalProfile,
   openModalNewCard,
   closeModal,
-  closeModalOverley,
-  closeModalEsc,
+  closeModalOverleyAndEsc,
 };
 
-function openModal() {
+function openModalProfile() {
   //console.log("Есть нажатие на открытие попапа редактора профиля");
-  popupTypeEdit.style.display = "flex";
-  popupTypeEdit.style.transition = "visibility 0s 0.6s, opacity 0.6s";
+  popupTypeEdit.classList.add("popup_is-opened");
 }
 
 function openModalNewCard() {
-  //console.log("Есть нажатие на добавление карточки");
-  popupNewCard.style.display = "flex";
+  //console.log("Есть нажатие на попап добавления карточки");
+  popupNewCard.classList.add("popup_is-opened");
 }
 
 function closeModal() {
-  //console.log("Есть нажатие на кнопку закрытия попапа");
-  popup.style.display = "none";
-  popupNewCard.style.display = "none";
-  popupImage.style.display = "none";
+  //console.log ("Нажатие на крестик закрытия любого попапа")
+  popupTypeEdit.classList.remove("popup_is-opened");
+  popupNewCard.classList.remove("popup_is-opened");
+  popupImage.classList.remove("popup_is-opened");
 }
 
-function closeModalOverley(evt) {
-  if (evt.target === popup) {
-    //console.log("Нажатие на попап");
-    popup.style.display = "none";
-    popupNewCard.style.display = "none";
-    popupImage.style.display = "none";
-  }
-}
-
-function closeModalEsc(evt) {
-  if (evt.key === "Escape") {
-    //console.log("Нажатие на Esc");
-    popup.style.display = "none";
-    popupNewCard.style.display = "none";
-    popupImage.style.display = "none";
+function closeModalOverleyAndEsc(event) {
+  //console.log (event.target)
+  if (
+    event.target === popupTypeEdit ||
+    event.target === popupNewCard ||
+    event.target === popupImage ||
+    event.key === "Escape"
+  ) {
+    popupTypeEdit.classList.remove("popup_is-opened");
+    popupNewCard.classList.remove("popup_is-opened");
+    popupImage.classList.remove("popup_is-opened");
   }
 }
