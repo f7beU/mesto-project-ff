@@ -1,30 +1,16 @@
 import "./index.css";
 import { initialCards } from "./components/cards.js";
-import {
-  createCard,
-  deleteCard,
-  likeCardButton,
-  openModalImageCard,
-} from "./components/card.js";
-import {
-  openModalProfile,
-  openModalNewCard,
-  closeModal,
-  closeModalOverleyAndEsc,
-} from "./components/modal.js";
+import { createCard, deleteCard, likeCardButton } from "./components/card.js";
+import { openPopup, closePopup } from "./components/modal.js";
 
 const logoImage = new URL("./images/logo.svg", import.meta.url);
 const avatarImage = new URL("./images/avatar.jpg", import.meta.url);
 
 const placesList = document.querySelector(".places__list");
-
-export { popupNewCard, popupTypeEdit };
-
-const popup = document.querySelector(".popup");
 const popupNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
-const allButtonsClosePopup = document.querySelectorAll(".popup__close");
-const allButtonsClosePopupOverley = document.querySelectorAll(".popup");
+const popupImage = document.querySelector(".popup_type_image");
+const allPopups = document.querySelectorAll(".popup");
 
 initialCards.forEach((el) => {
   const cardTitle = el.name;
@@ -36,51 +22,50 @@ initialCards.forEach((el) => {
       cardImage,
       deleteCard,
       likeCardButton,
-      openModalImageCard
+      popupOpenImageModal
     )
   );
 });
 
 //открытие попапа редактора профиля
 const editProfileButton = document.querySelector(".profile__edit-button");
-editProfileButton.addEventListener("click", openModalProfile);
+editProfileButton.addEventListener("click", () => openPopup(popupTypeEdit));
 
 //открытие попапа добавления новой карточки
 const addNewCardButton = document.querySelector(".profile__add-button");
-addNewCardButton.addEventListener("click", openModalNewCard);
+addNewCardButton.addEventListener("click", () => openPopup(popupNewCard));
 
-
-//закрывается попап на крестик в правом верхнем, оверлей и Esc
-for (let i = 0; i < allButtonsClosePopup.length; i++) {
-  allButtonsClosePopup[i].addEventListener("click", closeModal);
+//функция открытия при нажатии на картинку
+function popupOpenImageModal(url, alt) {
+  openPopup(popupImage);
+  popupImage.querySelector("img").src = url;
+  popupImage.querySelector(".popup__caption").textContent = alt;
+  popupImage.querySelector("img").alt = alt;
 }
-for (let i = 0; i < allButtonsClosePopupOverley.length; i++) {
-  allButtonsClosePopupOverley[i].addEventListener(
-    "click",
-    closeModalOverleyAndEsc
-  );
-}
-document.addEventListener("keydown", closeModalOverleyAndEsc);
 
+//закрытие попапа нажатием на крестик
+for (let i = 0; i < allPopups.length; i++) {
+  const popupCloseButton = allPopups[i].querySelector(".popup__close");
+  popupCloseButton.addEventListener("click", () => closePopup(allPopups[i]));
+}
 
 //изменение данных в форме карточки профиля
-const formElementProfile = document.querySelector(".popup__form");
+const formElementProfile = popupTypeEdit.querySelector(".popup__form");
 const nameInput = document.querySelector(".profile__title");
 const jobInput = document.querySelector(".profile__description");
 
 formElementProfile.name.value = nameInput.textContent;
 formElementProfile.description.value = jobInput.textContent;
 
-function handleFormSubmit(evt) {
+function handleFormProfileSubmit(evt) {
   evt.preventDefault();
 
   nameInput.textContent = formElementProfile.name.value;
   jobInput.textContent = formElementProfile.description.value;
 
-  closeModal();
+  closePopup(popupTypeEdit);
 }
-formElementProfile.addEventListener("submit", handleFormSubmit);
-
+formElementProfile.addEventListener("submit", handleFormProfileSubmit);
 
 //добавление новой карточки
 const formElementNewCard = popupNewCard.querySelector(".popup__form");
@@ -102,10 +87,13 @@ function addNewCardForm(evt) {
       linkInputNewPlace.value,
       deleteCard,
       likeCardButton,
-      openModalImageCard
+      popupOpenImageModal
     )
   );
 
-  closeModal();
+  closePopup(popupNewCard);
+
+  nameInputNewPlace.value = "";
+  linkInputNewPlace.value = "";
 }
 formElementNewCard.addEventListener("submit", addNewCardForm);
