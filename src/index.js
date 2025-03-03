@@ -67,6 +67,18 @@ function handleFormProfileSubmit(evt) {
 }
 formElementProfile.addEventListener("submit", handleFormProfileSubmit);
 
+//закрытие попапа профиля с незаполненными полями ввода
+const formElementProfileCloseButton =
+  popupTypeEdit.querySelector(".popup__close");
+formElementProfileCloseButton.addEventListener("click", function () {
+  if (formElementProfile.name.value === "") {
+    formElementProfile.name.value = nameInput.textContent;
+  }
+  if (formElementProfile.description.value === "") {
+    formElementProfile.description.value = jobInput.textContent;
+  }
+});
+
 //добавление новой карточки
 const formElementNewCard = popupNewCard.querySelector(".popup__form");
 
