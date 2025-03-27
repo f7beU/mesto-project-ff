@@ -4,7 +4,9 @@
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
-  background-size: cover;
+  /* background-size: cover; */
+  object-fit: cover;
+  /* добавил */
   background-position: center;
   margin: 0 29px 0 0;
 }

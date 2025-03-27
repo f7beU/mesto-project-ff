@@ -21,14 +21,13 @@
       </header>
       <main class="content">
         <section class="profile page__section">
-          <div
-            class="profile__image"
-            style="background-image: url(<%=require('./images/avatar.jpg')%>)"
-          ></div>
+          <!-- <div> -->
+          <img src="" alt="Фото в профиле" class="profile__image">
+          <!-- </div> -->
           <div class="profile__info">
-            <h1 class="profile__title">Жак-Ив Кусто</h1>
+            <h1 class="profile__title"></h1>
             <button class="profile__edit-button" type="button"></button>
-            <p class="profile__description">Исследователь океана</p>
+            <p class="profile__description"></p>
           </div>
           <button class="profile__add-button" type="button"></button>
         </section>
@@ -43,21 +42,34 @@
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
-          <form class="popup__form" name="edit-profile">
+          <form class="popup__form" name="edit-profile" novalidate>
             <input
+              id="name-input"
               type="text"
               name="name"
+              minlength="2"
+              maxlength="40"
+              pattern="[a-zA-Zа-яА-ЯЁё\s\-]+"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+            
               class="popup__input popup__input_type_name"
               placeholder="Имя"
               required
             />
+            <span class="name-input-error form__input-error"></span>
             <input
+              id="description-input"
               type="text"
               name="description"
+              minlength="2"
+              maxlength="200"
+              pattern="[a-zA-Zа-яА-ЯЁё\s\-]+"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               class="popup__input popup__input_type_description"
-              placeholder="Занятие"
+              placeholder="О себе"
               required
             />
+            <span class="description-input-error form__input-error"></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
@@ -68,21 +80,29 @@
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Новое место</h3>
-          <form class="popup__form" name="new-place">
+          <form class="popup__form" name="new-place" novalidate>
             <input
+              id="place-name-input"
               type="text"
               name="place-name"
+              minlength="2"
+              maxlength="30"
+              pattern="[a-zA-Zа-яА-ЯЁё\s\-]+"
+              data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
               class="popup__input popup__input_type_card-name"
               placeholder="Название"
               required
             />
+            <span class="place-name-input-error form__input-error"></span>
             <input
+              id="link-input"
               type="url"
               name="link"
               class="popup__input popup__input_type_url"
               placeholder="Ссылка на картинку"
               required
             />
+            <span class="link-input-error form__input-error"></span>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
@@ -106,8 +126,12 @@
         <button type="button" class="card__delete-button"></button>
         <div class="card__description">
           <h2 class="card__title"></h2>
-          <button type="button" class="card__like-button"></button>
+          <div class="like__block">
+            <button type="button" class="card__like-button"></button>
+            <div class="likes__counter">0</div>
+          </div>
         </div>
+        
       </li>
     </template>
   </body>
