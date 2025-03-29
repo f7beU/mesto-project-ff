@@ -8,7 +8,7 @@ export function createCard(
   cardLike,
   deleteCard,
   likeCardButton,
-  likeCardButtonOff, // добавил
+  likeCardButtonOff,
   popupOpenImageModal,
   nameMeProfile,
   autorCard,
@@ -24,6 +24,7 @@ export function createCard(
   cardElement.querySelector(".card__image").alt = cardTitle;
   cardElement.querySelector(".card__title").textContent = cardTitle;
 
+  // проверяю кто автор карточки
   if (autorCard !== nameMeProfile) {
     // console.log("Имена не совпадают")
     deleteButton.style.display = "none";
@@ -31,62 +32,51 @@ export function createCard(
 
   checkArrayLikes(arrLikes, likeButton);
 
-  // const likesCounter = cardElement.querySelector(".likes__counter")
   cardElement.querySelector(".likes__counter").textContent = cardLike;
 
+  // вызов функции удаления карточки со страницы
   deleteButton.addEventListener("click", deleteCard);
-  //функция удаления карточки с сервера
+  // вызов функции удаления карточки с сервера
   deleteButton.addEventListener("click", () => deleteMeCard(elementId));
 
-  //функция постановки лайка
+  // вызов функции постановки лайка на страницу и на сервер
   likeButton.addEventListener("click", likeCardButton);
-  likeButton.addEventListener(
-    "click",
-    () =>
-      cardLikeAdd(elementId)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Сетевой ответ не был успешным");
-          }
-          console.log("Лайк поставлен");
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data.likes.length);
-          cardElement.querySelector(".likes__counter").textContent =
-            data.likes.length;
-        })
-    // .catch((error) => {
-    //   console.error("Возникла проблема с PUT-запросом:", error.message);
-    // });
+  likeButton.addEventListener("click", () =>
+    cardLikeAdd(elementId)
+      .then((res) => {
+        // console.log("Лайк поставлен");
+        return res.json();
+      })
+      .then((data) => {
+        // console.log(data.likes.length + " новое количество лайков");
+        cardElement.querySelector(".likes__counter").textContent =
+          data.likes.length;
+      })
+      .catch((err) => {
+        console.log("Возникла проблема с PUT-запросом:", err.message);
+      })
   );
 
   //функция снятия лайка
   const likeButtonOff = cardElement.querySelector(
     ".card__like-button_is-active"
   );
-  // console.log(likeButtonOff)
   if (likeButtonOff !== null) {
     likeButtonOff.addEventListener("click", likeCardButtonOff);
-    likeButtonOff.addEventListener(
-      "click",
-      () =>
-        cardLikeRemove(elementId)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Сетевой ответ не был успешным");
-            }
-            console.log("Лайк успешно снят");
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data.likes.length);
-            cardElement.querySelector(".likes__counter").textContent =
-              data.likes.length;
-          })
-      // .catch((error) => {
-      //   console.error("Возникла проблема с PUT-запросом:", error.message);
-      // });
+    likeButtonOff.addEventListener("click", () =>
+      cardLikeRemove(elementId)
+        .then((res) => {
+          // console.log("Лайк успешно снят");
+          return res.json();
+        })
+        .then((data) => {
+          // console.log(data.likes.length + " новое количество лайков");
+          cardElement.querySelector(".likes__counter").textContent =
+            data.likes.length;
+        })
+        .catch((err) => {
+          console.log("Возникла проблема с DELETE-запросом:", err.message);
+        })
     );
   }
 
@@ -97,44 +87,19 @@ export function createCard(
   return cardElement;
 }
 
+// функция удаления карточки со страницы
 export function deleteCard(event) {
   const deleteItem = event.target.closest(".places__item");
   deleteItem.remove();
 }
 
+// функция постановки лайка на страницу
 export function likeCardButton(event) {
   //console.log ("Нажато сердечко")
   event.target.classList.add("card__like-button_is-active");
-
-  // const likeButtonOff = cardElement.querySelector(
-  //   ".card__like-button_is-active"
-  // );
-  // // console.log(likeButtonOff)
-  // if (likeButtonOff !== null) {
-  //   likeButtonOff.addEventListener("click", likeCardButtonOff);
-  //   likeButtonOff.addEventListener(
-  //     "click",
-  //     () =>
-  //       cardLikeRemove(elementId)
-  //         .then((response) => {
-  //           if (!response.ok) {
-  //             throw new Error("Сетевой ответ не был успешным");
-  //           }
-  //           console.log("Лайк успешно снят");
-  //           return response.json();
-  //         })
-  //         .then((data) => {
-  //           console.log(data.likes.length);
-  //           cardElement.querySelector(".likes__counter").textContent =
-  //             data.likes.length;
-  //         })
-  //     // .catch((error) => {
-  //     //   console.error("Возникла проблема с PUT-запросом:", error.message);
-  //     // });
-  //   );
-  // }
 }
 
+// функция удаления лайка со страницы
 export function likeCardButtonOff(event) {
   event.target.classList.remove("card__like-button_is-active");
 }
@@ -143,9 +108,7 @@ export function likeCardButtonOff(event) {
 // ранее лайка на странице при перезагрузке
 import { nameMeProfile } from "../index.js";
 export function checkArrayLikes(arr, likeButton) {
-  // console.log(arr)
   arr.forEach((el) => {
-    // console.log(el)
     // console.log(el.name)
     if (el.name === nameMeProfile) {
       // console.log("Это мой лайк")
