@@ -1,6 +1,12 @@
 // включение валидации вызовом enableValidation
 // все настройки передаются при вызове
 
+const configValid = {
+  formSubmitInactive: "form__submit_inactive",
+  formInputTypeError: "form__input_type_error",
+  formInputErrorActive: "form__input-error_active",
+};
+
 export const clearValidation = (formElement, params) => {
   const inputList = Array.from(
     formElement.querySelectorAll(params.inputSelector)
@@ -23,26 +29,28 @@ export const toggleButtonState = (inputList, buttonElement) => {
   if (hasInvalidInput(inputList)) {
     // console.log("Инпут невалидный");
     buttonElement.disabled = true;
-    buttonElement.classList.add("form__submit_inactive");
+    // buttonElement.classList.add("form__submit_inactive");
+    buttonElement.classList.add(configValid.formSubmitInactive);
   } else {
     // console.log("Инпут валидный");
     buttonElement.disabled = false;
-    buttonElement.classList.remove("form__submit_inactive");
+    // buttonElement.classList.remove("form__submit_inactive");
+    buttonElement.classList.remove(configValid.formSubmitInactive);
   }
 };
 
 const showInputError = (formElement, inputElement, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   // console.log(errorElement)
-  inputElement.classList.add("form__input_type_error");
+  inputElement.classList.add(configValid.formInputTypeError);
   errorElement.textContent = errorMessage;
-  errorElement.classList.add("form__input-error_active");
+  errorElement.classList.add(configValid.formInputErrorActive);
 };
 
 const hideInputError = (formElement, inputElement) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove("form__input_type_error");
-  errorElement.classList.remove("form__input-error_active");
+  inputElement.classList.remove(configValid.formInputTypeError);
+  errorElement.classList.remove(configValid.formInputErrorActive);
   errorElement.textContent = "";
 };
 
