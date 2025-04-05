@@ -5,15 +5,18 @@ const configApi = {
 
 // функция проверки ответа сервера
 function checkServerResponse(res) {
-  console.log(res.ok);
-  return res.json();
+  console.log(res.status);
+  if (res.ok) {
+    return res.json();
+  }
+  throw new Error(res.message);
 }
 
-// функция открытия профиля с использованием данных с сервера
-export function openProfileData() {
+// функция получения данных профиля с сервера
+export function getProfileData() {
   return fetch(configApi.addresServer + "users/me", {
     headers: {
-      authorization: "b0b783e3-a04a-4d7a-8e2d-c81e111c59a3",
+      authorization: configApi.keyToken,
     },
   }).then((res) => checkServerResponse(res));
 }
@@ -45,7 +48,7 @@ export function editProfile(nameNew, descriptionNew) {
 }
 
 // функция отправки карточки на сервер
-export function createNewCard(nameNewPlace, linkNewPlace) {
+export function postNewCard(nameNewPlace, linkNewPlace) {
   return fetch(configApi.addresServer + "cards", {
     method: "POST",
     headers: {

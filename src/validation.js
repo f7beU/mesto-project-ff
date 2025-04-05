@@ -1,11 +1,7 @@
 // включение валидации вызовом enableValidation
 // все настройки передаются при вызове
 
-const configValid = {
-  formSubmitInactive: "form__submit_inactive",
-  formInputTypeError: "form__input_type_error",
-  formInputErrorActive: "form__input-error_active",
-};
+import { configValid } from "./index.js";
 
 export const clearValidation = (formElement, params) => {
   const inputList = Array.from(
@@ -13,6 +9,7 @@ export const clearValidation = (formElement, params) => {
   );
   const buttonElement = formElement.querySelector(params.submitButtonSelector);
   inputList.forEach((inputElement) => {
+    inputElement.value = "";
     hideInputError(formElement, inputElement, params);
   });
   toggleButtonState(inputList, buttonElement, params);
@@ -24,17 +21,16 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-export const toggleButtonState = (inputList, buttonElement) => {
+export const toggleButtonState = (inputList, buttonElement, params) => {
   // если есть хотя бы один невалидный инпут
+  // console.log(inputList, hasInvalidInput(inputList))
   if (hasInvalidInput(inputList)) {
     // console.log("Инпут невалидный");
     buttonElement.disabled = true;
-    // buttonElement.classList.add("form__submit_inactive");
     buttonElement.classList.add(configValid.formSubmitInactive);
   } else {
     // console.log("Инпут валидный");
     buttonElement.disabled = false;
-    // buttonElement.classList.remove("form__submit_inactive");
     buttonElement.classList.remove(configValid.formSubmitInactive);
   }
 };
@@ -70,7 +66,7 @@ const isValid = (formElement, inputElement) => {
 };
 
 const setEventListeners = (formElement, params) => {
-  // Находим все поля внутри формы
+  // находим все поля внутри формы
   const inputList = Array.from(
     formElement.querySelectorAll(params.inputSelector)
   );
@@ -78,12 +74,14 @@ const setEventListeners = (formElement, params) => {
   // console.log(inputList)
 
   const buttonElement = formElement.querySelector(params.submitButtonSelector);
+
   toggleButtonState(inputList, buttonElement);
 
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
       // console.log("нажатие на поле ввода")
       isValid(formElement, inputElement);
+      // toggleButtonState(inputList, params);
       toggleButtonState(inputList, buttonElement);
     });
   });

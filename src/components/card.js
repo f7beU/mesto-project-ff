@@ -32,7 +32,9 @@ export function createCard(
   // вызов функции проверки, стоит ли мой лайк на карточке
   checkArrayLikes(arrLikes, likeButton, nameMeProfile);
 
-  cardElement.querySelector(".likes__counter").textContent = cardLike;
+  const likesCounter = cardElement.querySelector(".likes__counter");
+
+  likesCounter.textContent = cardLike;
 
   // вызов функции удаления карточки со страницы
   deleteButton.addEventListener("click", (event) =>
@@ -41,7 +43,7 @@ export function createCard(
 
   // вызов функции работы лайка
   likeButton.addEventListener("click", (event) =>
-    likeButtonJob(event, elementId, likeButton, cardElement)
+    likeButtonJob(event, elementId, likeButton, likesCounter)
   );
 
   popupOpenImage.addEventListener("click", () =>
@@ -54,28 +56,26 @@ export function createCard(
 // функция удаления карточки со страницы
 export function deleteCard(event, elementId) {
   const deleteItem = event.target.closest(".places__item");
-  deleteItem.remove();
   deleteMeCard(elementId)
-    // .then(console.log("Успешно удалено"))
+    .then(deleteItem.remove())
     .catch((err) => {
-      console.log("Возникла проблема с DELETE-запросом:", err.message);
+      console.error("Возникла проблема с DELETE-запросом:", err.message);
     });
 }
 
 // функция работы кнопки лайка
-export function likeButtonJob(event, elementId, likeButton, cardElement) {
+export function likeButtonJob(event, elementId, likeButton, likesCounter) {
   if (likeButton.classList.contains("card__like-button_is-active")) {
     // console.log("Лайк присутствует");
     cardLikeRemove(elementId)
       .then((data) => {
         // console.log("Снимаю лайк");
         // console.log(data.likes.length + " новое количество лайков");
-        cardElement.querySelector(".likes__counter").textContent =
-          data.likes.length;
+        likesCounter.textContent = data.likes.length;
         event.target.classList.toggle("card__like-button_is-active");
       })
       .catch((err) => {
-        console.log("Возникла проблема с DELETE-запросом:", err.message);
+        console.error("Возникла проблема с DELETE-запросом:", err.message);
       });
   } else {
     // console.log("Лайк отсутствует");
@@ -83,13 +83,11 @@ export function likeButtonJob(event, elementId, likeButton, cardElement) {
       .then((data) => {
         // console.log("Ставлю лайк");
         // console.log(data.likes.length + " новое количество лайков");
-        cardElement.querySelector(".likes__counter").textContent =
-          data.likes.length;
+        likesCounter.textContent = data.likes.length;
         event.target.classList.toggle("card__like-button_is-active");
-        likeButton.removeEventListener("click", cardLikeAdd);
       })
       .catch((err) => {
-        console.log("Возникла проблема с PUT-запросом:", err.message);
+        console.error("Возникла проблема с PUT-запросом:", err.message);
       });
   }
 }
