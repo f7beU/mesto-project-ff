@@ -22,7 +22,6 @@ const nameInput = document.querySelector(".profile__title");
 const jobInput = document.querySelector(".profile__description");
 const imageProfileFoto = document.querySelector(".profile__image");
 
-//style="background-image: url(<%=require('./images/avatar.jpg')%>)"
 const params = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
@@ -85,14 +84,14 @@ editProfileButton.addEventListener("click", () => {
   const descriptionInputFormPopup =
     popupTypeEdit.querySelector("#description-input");
   getProfileData()
-  .then((res) => {
-    nameInputFormPopup.value = res.name;
-    descriptionInputFormPopup.value = res.about;
-    openPopup(popupTypeEdit);
-  })
-  .catch((err) => {
-    console.error("Ошибка. Запрос не выполнен: ", err);
-  });
+    .then((res) => {
+      nameInputFormPopup.value = res.name;
+      descriptionInputFormPopup.value = res.about;
+      openPopup(popupTypeEdit);
+    })
+    .catch((err) => {
+      console.error("Ошибка. Запрос не выполнен: ", err);
+    });
 });
 
 // открытие попапа добавления новой карточки
@@ -128,7 +127,6 @@ function handleFormProfileSubmit(event) {
   )
     .then(loadingNewData(true, formElementProfile))
     .then((res) => {
-      // через деструктуризацию
       nameInput.textContent = res.name;
       jobInput.textContent = res.about;
       closePopup(popupTypeEdit);
@@ -161,7 +159,6 @@ imageProfileForm.addEventListener("submit", (event) => {
   editProfileFoto(imageNewProfileFoto.value)
     .then(loadingNewData(true, imageProfileForm))
     .then((data) => {
-      // console.log("Сигнал пришёл")
       imageProfileFoto.src = data.avatar;
       closePopup(imageProfileFotoPopup);
       imageProfileForm.reset();
@@ -190,8 +187,6 @@ formElementNewCard.addEventListener("submit", (event) => {
 
   const cardLike = formElementNewCard.querySelector(".likes__counter");
 
-  // добавляю карточку в начало списка используя createCard
-  // перенёс функцию создания новой карточки в цепочку .then
   postNewCard(nameInputNewPlace.value, linkInputNewPlace.value)
     .then(loadingNewData(true, popupNewCard))
     .then((res) => {
@@ -225,7 +220,6 @@ formElementNewCard.addEventListener("submit", (event) => {
 // функция отображения процесса загрузки
 function loadingNewData(isLoading, popupForm) {
   const popupButton = popupForm.querySelector(params.submitButtonSelector);
-  // console.log("Сигнал пришёл")
   if (isLoading) {
     popupButton.textContent = "Сохранение...";
   } else {

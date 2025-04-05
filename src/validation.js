@@ -21,9 +21,8 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-export const toggleButtonState = (inputList, buttonElement, params) => {
+export const toggleButtonState = (inputList, buttonElement) => {
   // если есть хотя бы один невалидный инпут
-  // console.log(inputList, hasInvalidInput(inputList))
   if (hasInvalidInput(inputList)) {
     // console.log("Инпут невалидный");
     buttonElement.disabled = true;
