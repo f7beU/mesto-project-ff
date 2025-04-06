@@ -29,31 +29,33 @@ const params = {
   inactiveButtonClass: "popup__button_disabled",
   inputErrorClass: "popup__input_type_error",
   errorClass: "popup__error_visible",
-};
-
-export const configValid = {
   formSubmitInactive: "form__submit_inactive",
   formInputTypeError: "form__input_type_error",
   formInputErrorActive: "form__input-error_active",
 };
 
-let nameMeProfile = "";
-let autorCard = "";
+let idMeProfile = "";
+let idAutorCard = "";
 let arrLikes = [];
 let elementId = "";
+let userName = "";
+let userDescription = "";
 
 Promise.all([getProfileData(), openCard()])
   .then((values) => {
     const [userData, cardsArray] = values;
     // console.log("Оба промиса сработали")
-    nameInput.textContent = userData.name;
-    jobInput.textContent = userData.about;
+    // console.log(userData)
+    userName = userData.name;
+    userDescription = userData.about;
+    nameInput.textContent = userName;
+    jobInput.textContent = userDescription;
     imageProfileFoto.src = userData.avatar;
-    nameMeProfile = userData.name;
+    idMeProfile = userData._id;
     // console.log(cardsArray);
     cardsArray.forEach((el) => {
       const cardLike = el.likes.length;
-      autorCard = el.owner.name;
+      idAutorCard = el.owner._id;
       arrLikes = el.likes;
       elementId = el._id;
       placesList.append(
@@ -64,8 +66,8 @@ Promise.all([getProfileData(), openCard()])
           deleteCard,
           likeButtonJob,
           popupOpenImageModal,
-          nameMeProfile,
-          autorCard,
+          idMeProfile,
+          idAutorCard,
           elementId,
           arrLikes
         )
@@ -83,15 +85,9 @@ editProfileButton.addEventListener("click", () => {
   const nameInputFormPopup = popupTypeEdit.querySelector("#name-input");
   const descriptionInputFormPopup =
     popupTypeEdit.querySelector("#description-input");
-  getProfileData()
-    .then((res) => {
-      nameInputFormPopup.value = res.name;
-      descriptionInputFormPopup.value = res.about;
-      openPopup(popupTypeEdit);
-    })
-    .catch((err) => {
-      console.error("Ошибка. Запрос не выполнен: ", err);
-    });
+  nameInputFormPopup.value = userName;
+  descriptionInputFormPopup.value = userDescription;
+  openPopup(popupTypeEdit);
 });
 
 // открытие попапа добавления новой карточки
@@ -120,15 +116,16 @@ const formElementProfile = popupTypeEdit.querySelector(".popup__form");
 
 function handleFormProfileSubmit(event) {
   event.preventDefault();
-
+  loadingNewData(true, formElementProfile);
   editProfile(
     formElementProfile.name.value,
     formElementProfile.description.value
   )
-    .then(loadingNewData(true, formElementProfile))
     .then((res) => {
-      nameInput.textContent = res.name;
-      jobInput.textContent = res.about;
+      userName = res.name;
+      userDescription = res.about;
+      nameInput.textContent = userName;
+      jobInput.textContent = userDescription;
       closePopup(popupTypeEdit);
     })
     .catch((err) => {
@@ -156,8 +153,8 @@ const imageNewProfileFoto = imageProfileForm.link;
 
 imageProfileForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  loadingNewData(true, imageProfileForm);
   editProfileFoto(imageNewProfileFoto.value)
-    .then(loadingNewData(true, imageProfileForm))
     .then((data) => {
       imageProfileFoto.src = data.avatar;
       closePopup(imageProfileFotoPopup);
@@ -176,7 +173,7 @@ const formElementNewCard = popupNewCard.querySelector(".popup__form");
 
 formElementNewCard.addEventListener("submit", (event) => {
   event.preventDefault();
-
+  loadingNewData(true, popupNewCard);
   const nameInputNewPlace = formElementNewCard.querySelector(
     ".popup__input_type_card-name"
   );
@@ -185,12 +182,11 @@ formElementNewCard.addEventListener("submit", (event) => {
     ".popup__input_type_url"
   );
 
-  const cardLike = formElementNewCard.querySelector(".likes__counter");
-
   postNewCard(nameInputNewPlace.value, linkInputNewPlace.value)
-    .then(loadingNewData(true, popupNewCard))
     .then((res) => {
-      autorCard = res.owner.name;
+      // console.log(res)
+      const cardLike = res.likes.length;
+      idAutorCard = res.owner._id;
       elementId = res._id;
       arrLikes = res.likes;
       placesList.prepend(
@@ -201,8 +197,8 @@ formElementNewCard.addEventListener("submit", (event) => {
           deleteCard,
           likeButtonJob,
           popupOpenImageModal,
-          nameMeProfile,
-          autorCard,
+          idMeProfile,
+          idAutorCard,
           elementId,
           arrLikes
         )

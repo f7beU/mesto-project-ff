@@ -1,8 +1,6 @@
 // включение валидации вызовом enableValidation
 // все настройки передаются при вызове
 
-import { configValid } from "./index.js";
-
 export const clearValidation = (formElement, params) => {
   const inputList = Array.from(
     formElement.querySelectorAll(params.inputSelector)
@@ -21,35 +19,35 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-export const toggleButtonState = (inputList, buttonElement) => {
+export const toggleButtonState = (inputList, buttonElement, params) => {
   // если есть хотя бы один невалидный инпут
-  if (hasInvalidInput(inputList)) {
+  if (hasInvalidInput(inputList, params)) {
     // console.log("Инпут невалидный");
     buttonElement.disabled = true;
-    buttonElement.classList.add(configValid.formSubmitInactive);
+    buttonElement.classList.add(params.formSubmitInactive);
   } else {
     // console.log("Инпут валидный");
     buttonElement.disabled = false;
-    buttonElement.classList.remove(configValid.formSubmitInactive);
+    buttonElement.classList.remove(params.formSubmitInactive);
   }
 };
 
-const showInputError = (formElement, inputElement, errorMessage) => {
+const showInputError = (formElement, inputElement, errorMessage, params) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   // console.log(errorElement)
-  inputElement.classList.add(configValid.formInputTypeError);
+  inputElement.classList.add(params.formInputTypeError);
   errorElement.textContent = errorMessage;
-  errorElement.classList.add(configValid.formInputErrorActive);
+  errorElement.classList.add(params.formInputErrorActive);
 };
 
-const hideInputError = (formElement, inputElement) => {
+const hideInputError = (formElement, inputElement, params) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove(configValid.formInputTypeError);
-  errorElement.classList.remove(configValid.formInputErrorActive);
+  inputElement.classList.remove(params.formInputTypeError);
+  errorElement.classList.remove(params.formInputErrorActive);
   errorElement.textContent = "";
 };
 
-const isValid = (formElement, inputElement) => {
+const isValid = (formElement, inputElement, params) => {
   if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
@@ -57,10 +55,15 @@ const isValid = (formElement, inputElement) => {
   }
   if (!inputElement.validity.valid) {
     // console.log("Поле не валидно")
-    showInputError(formElement, inputElement, inputElement.validationMessage);
+    showInputError(
+      formElement,
+      inputElement,
+      inputElement.validationMessage,
+      params
+    );
   } else {
     // console.log("Валидное поле")
-    hideInputError(formElement, inputElement);
+    hideInputError(formElement, inputElement, params);
   }
 };
 
@@ -74,14 +77,14 @@ const setEventListeners = (formElement, params) => {
 
   const buttonElement = formElement.querySelector(params.submitButtonSelector);
 
-  toggleButtonState(inputList, buttonElement);
+  toggleButtonState(inputList, buttonElement, params);
 
   inputList.forEach((inputElement) => {
     inputElement.addEventListener("input", () => {
       // console.log("нажатие на поле ввода")
-      isValid(formElement, inputElement);
+      isValid(formElement, inputElement, params);
       // toggleButtonState(inputList, params);
-      toggleButtonState(inputList, buttonElement);
+      toggleButtonState(inputList, buttonElement, params);
     });
   });
 };

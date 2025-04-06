@@ -9,8 +9,8 @@ export function createCard(
   deleteCard,
   likeButtonJob,
   popupOpenImageModal,
-  nameMeProfile,
-  autorCard,
+  idMeProfile,
+  idAutorCard,
   elementId,
   arrLikes
 ) {
@@ -24,13 +24,13 @@ export function createCard(
   cardElement.querySelector(".card__title").textContent = cardTitle;
 
   // проверяю кто автор карточки
-  if (autorCard !== nameMeProfile) {
+  if (idAutorCard !== idMeProfile) {
     // console.log("Имена не совпадают")
     deleteButton.style.display = "none";
   }
 
   // вызов функции проверки, стоит ли мой лайк на карточке
-  checkArrayLikes(arrLikes, likeButton, nameMeProfile);
+  checkArrayLikes(arrLikes, likeButton, idMeProfile);
 
   const likesCounter = cardElement.querySelector(".likes__counter");
 
@@ -94,10 +94,9 @@ export function likeButtonJob(event, elementId, likeButton, likesCounter) {
 
 // функция для отрисовки поставленного мною
 // ранее лайка на странице при перезагрузке
-export function checkArrayLikes(arr, likeButton, nameMeProfile) {
+export function checkArrayLikes(arr, likeButton, idMeProfile) {
   arr.forEach((el) => {
-    // console.log(el.name)
-    if (el.name === nameMeProfile) {
+    if (el._id === idMeProfile) {
       // console.log("Это мой лайк")
       likeButton.classList.add("card__like-button_is-active");
     }
